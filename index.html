@@ -6,12 +6,17 @@
     <title>تحويل المستندات إلى Word - نسخة الويب</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Tajawal:wght@400;500;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <!-- مكتبات المعالجة (Client-Side) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.min.js"></script>
+    <script src="https://unpkg.com/docx@7.8.2/build/index.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
     <link rel="stylesheet" href="styles.css">
@@ -27,17 +32,21 @@
     <div class="header-logo"></div>
 
     <div class="upload-container">
-        <h2>تحويل المستندات إلى Word (Web Version)</h2>
-        <p style="color: #aaa; margin-bottom: 20px;">يعمل بالكامل في متصفحك! لا يتم رفع ملفاتك لأي خادم.</p>
+        <h2>🔄 تحويل المستندات إلى Word</h2>
+        <p>يعمل بالكامل في متصفحك! لا يتم رفع ملفاتك لأي خادم. 🔒</p>
 
         <label for="file_input" class="custom-file-upload">
             <i class="fas fa-cloud-upload-alt upload-icon"></i>
-            انقر لاختيار ملف (PDF أو صورة)
+            <strong>انقر لاختيار ملف</strong>
+            <small style="display: block; margin-top: 8px; opacity: 0.7;">PDF أو صورة (JPG, PNG, WebP)</small>
             <input id="file_input" type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" style="display:none">
             <span id="file-name"></span>
         </label>
 
-        <button id="convert-btn" disabled>بدء التحويل</button>
+        <button id="convert-btn" disabled>
+            <i class="fas fa-magic" style="margin-left: 8px;"></i>
+            بدء التحويل
+        </button>
 
         <div class="progress-container" id="progress-container">
             <div class="progress-bar-bg">
@@ -48,18 +57,41 @@
 
         <div class="success-area" id="success-area">
             <p>✅ تم التحويل بنجاح!</p>
-            <button id="download-btn" style="background: #4caf50;">تحميل ملف Word</button>
+            <button id="download-btn" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);">
+                <i class="fas fa-download" style="margin-left: 8px;"></i>
+                تحميل ملف Word
+            </button>
         </div>
 
         <div class="note">
-            يدعم اللغة العربية والإنجليزية.<br>
-            يعتمد سرعة التحويل على سرعة جهازك (المعالجة تتم محلياً).
+            💡 <strong>ملاحظات:</strong><br>
+            • يدعم اللغة العربية والإنجليزية<br>
+            • سرعة التحويل تعتمد على سرعة جهازك (المعالجة محلية 100%)
         </div>
     </div>
 
     <script>
+        // التحقق من تحميل المكتبات
+        window.addEventListener('load', function () {
+            if (typeof pdfjsLib === 'undefined') {
+                alert('⚠️ خطأ: لم يتم تحميل مكتبة PDF.js. تحقق من اتصالك بالإنترنت.');
+            }
+            if (typeof Tesseract === 'undefined') {
+                alert('⚠️ خطأ: لم يتم تحميل مكتبة Tesseract.js. تحقق من اتصالك بالإنترنت.');
+            }
+            if (typeof docx === 'undefined') {
+                console.error('⚠️ خطأ: لم يتم تحميل مكتبة docx. تحقق من اتصالك بالإنترنت.');
+                alert('⚠️ خطأ: لم يتم تحميل مكتبة docx. يرجى تحديث الصفحة أو التحقق من اتصالك بالإنترنت.');
+            }
+            if (typeof saveAs === 'undefined') {
+                alert('⚠️ خطأ: لم يتم تحميل مكتبة FileSaver.js. تحقق من اتصالك بالإنترنت.');
+            }
+        });
+
         // إعداد PDF.js Worker
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
 
         const fileInput = document.getElementById('file_input');
         const fileNameSpan = document.getElementById('file-name');
@@ -183,7 +215,14 @@
         }
 
         async function createWordDoc(pages) {
-            const { Document, Packer, Paragraph, TextRun, AlignmentType } = window.docx;
+            // التحقق من توفر مكتبة docx بطرق مختلفة
+            const docxLib = window.docx || (typeof docx !== 'undefined' ? docx : null);
+
+            if (!docxLib) {
+                throw new Error('مكتبة docx غير متوفرة. يرجى تحديث الصفحة.');
+            }
+
+            const { Document, Packer, Paragraph, TextRun, AlignmentType, HeadingLevel } = docxLib;
 
             const docChildren = [];
 
@@ -191,7 +230,7 @@
             docChildren.push(
                 new Paragraph({
                     text: selectedFile.name,
-                    heading: window.docx.HeadingLevel.HEADING_1,
+                    heading: HeadingLevel.HEADING_1,
                     alignment: AlignmentType.CENTER,
                     bidirectional: true // مهم للعربية
                 })
@@ -199,8 +238,11 @@
 
             pages.forEach((page, index) => {
                 if (index > 0) {
-                    // فاصل صفحات ممكن إضافته، هنا سنضع خط فاصل
-                    docChildren.push(new Paragraph({ text: "------------------------------------------------", alignment: AlignmentType.CENTER }));
+                    // فاصل صفحات
+                    docChildren.push(new Paragraph({
+                        text: "―――――――――――――――――――――――――――――――――――――",
+                        alignment: AlignmentType.CENTER
+                    }));
                 }
 
                 const lines = page.text.split('\n');
