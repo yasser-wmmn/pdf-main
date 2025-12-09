@@ -1,0 +1,234 @@
+    <style>body {
+        background: #181c24;
+        background-size: cover;
+        min-height: 100vh;
+        font-family: 'Cairo', Tahoma, Arial, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+        margin: 0;
+    }
+
+    /* أشكال جانبية ديناميكية */
+    .side-shape {
+        position: absolute;
+        z-index: 1;
+        opacity: 0.18;
+        filter: blur(1px);
+        pointer-events: none;
+        animation: float 6s ease-in-out infinite alternate;
+    }
+
+    .side-shape.shape1 {
+        left: -80px;
+        top: 10%;
+        width: 180px;
+        height: 180px;
+        background: radial-gradient(circle at 60% 40%, #00c6fb 60%, transparent 100%);
+        animation-delay: 0s;
+    }
+
+    .side-shape.shape2 {
+        right: -100px;
+        bottom: 8%;
+        width: 220px;
+        height: 220px;
+        background: radial-gradient(circle at 40% 60%, #0078d7 60%, transparent 100%);
+        animation-delay: 1.5s;
+    }
+
+    .side-shape.shape3 {
+        left: 10%;
+        bottom: -80px;
+        width: 120px;
+        height: 120px;
+        background: radial-gradient(circle at 50% 50%, #fff 40%, transparent 100%);
+        opacity: 0.10;
+        animation-delay: 2.5s;
+    }
+
+    .side-shape.shape4 {
+        right: 5%;
+        top: 5%;
+        width: 90px;
+        height: 90px;
+        background: radial-gradient(circle at 60% 40%, #fff 40%, transparent 100%);
+        opacity: 0.12;
+        animation-delay: 3s;
+    }
+
+    .side-shape.shape5 {
+        left: 40%;
+        top: 80%;
+        width: 70px;
+        height: 70px;
+        background: radial-gradient(circle at 50% 50%, #00c6fb 60%, transparent 100%);
+        opacity: 0.15;
+        animation-delay: 4s;
+    }
+
+    @keyframes float {
+        0% {
+            transform: translateY(0) scale(1);
+        }
+
+        100% {
+            transform: translateY(-30px) scale(1.08);
+        }
+    }
+
+    /* الشعار */
+    .header-logo {
+        position: absolute;
+        top: 30px;
+        right: 30px;
+        width: 150px;
+        height: 150px;
+        background: url('static/bg-dark.png') no-repeat center;
+        background-size: cover;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 198, 251, 0.35);
+        opacity: 1;
+        z-index: 3;
+        transition: all 0.3s ease;
+        border: 2px solid #00c6fb;
+    }
+
+    /* الحاوية الرئيسية */
+    .upload-container {
+        background: rgba(35, 39, 47, 0.92);
+        padding: 40px 30px 30px 30px;
+        border-radius: 18px;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35);
+        max-width: 900px;
+        width: 90%;
+        text-align: center;
+        position: relative;
+        z-index: 2;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .upload-container h2 {
+        color: #fff;
+        margin-bottom: 18px;
+        font-size: 1.6em;
+        letter-spacing: 1px;
+        text-shadow: 0 0 10px rgba(0, 198, 251, 0.3);
+    }
+
+    .custom-file-upload {
+        border: 2px dashed #444;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        cursor: pointer;
+        border-radius: 12px;
+        background: #181c24;
+        color: #bbb;
+        margin-bottom: 18px;
+        transition: all 0.3s;
+        border-image: linear-gradient(to right, #0078d7, #00c6fb) 1;
+    }
+
+    .custom-file-upload:hover {
+        border-color: #00c6fb;
+        color: #00c6fb;
+        background: rgba(0, 198, 251, 0.05);
+    }
+
+    .upload-icon {
+        font-size: 40px;
+        color: #00c6fb;
+        margin-bottom: 8px;
+    }
+
+    #file-name {
+        color: #00c6fb;
+        margin-top: 10px;
+        font-weight: bold;
+    }
+
+    button {
+        background: linear-gradient(90deg, #0078d7 0%, #00c6fb 100%);
+        color: #fff;
+        border: none;
+        padding: 15px 0;
+        width: 100%;
+        border-radius: 8px;
+        font-size: 1.1em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-top: 10px;
+    }
+
+    button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 198, 251, 0.3);
+    }
+
+    button:disabled {
+        background: #444;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    /* شاشة التحميل (محدثة لتظهر كشريط تقدم) */
+    .progress-container {
+        display: none;
+        margin-top: 20px;
+        text-align: right;
+    }
+
+    .progress-bar-bg {
+        background: #333;
+        border-radius: 10px;
+        height: 10px;
+        width: 100%;
+        overflow: hidden;
+        margin-bottom: 10px;
+    }
+
+    .progress-bar-fill {
+        background: #00c6fb;
+        height: 100%;
+        width: 0%;
+        transition: width 0.3s;
+        box-shadow: 0 0 10px #00c6fb;
+    }
+
+    .status-text {
+        color: #fff;
+        font-size: 0.9em;
+    }
+
+    .note {
+        color: #888;
+        font-size: 0.85em;
+        margin-top: 18px;
+        border-top: 1px dashed #444;
+        padding-top: 12px;
+    }
+
+    .success-area {
+        display: none;
+        margin-top: 20px;
+        padding: 20px;
+        background: rgba(0, 255, 0, 0.1);
+        border-radius: 8px;
+        border: 1px solid #4caf50;
+    }
+
+    .success-area p {
+        color: #4caf50;
+        margin: 0 0 10px 0;
+        font-weight: bold;
+    }
+
+    </style>

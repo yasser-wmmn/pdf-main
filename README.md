@@ -1,51 +1,25 @@
-# PDF to Word Converter
+# Pure Web OCR Tool 📄➡️📝
 
-## Overview
-The PDF to Word Converter is a Python application designed to convert PDF files containing Arabic text and images into Word documents while preserving the original page order. This project utilizes various libraries to handle PDF processing and Word document creation.
+This project has been converted from a Python Flask application to a **Serverless, Client-Side Web Application**.
 
-## Features
-- Converts PDF files with Arabic text to Word documents.
-- Preserves the original layout and page order of the PDF.
-- Extracts images from the PDF and includes them in the Word document.
+## 🌟 Features
+- **Zero Server Required**: Runs entirely in the browser using WebAssembly.
+- **Privacy Focused**: Files are processed locally on your device; nothing is uploaded to cloud.
+- **Arabic Support**: Fully supports OCR for Arabic and English text.
+- **Format Support**: Converts PDFs and Images to properly formatted Word (.docx) documents.
 
-## Project Structure
-```
-PDF-to-Word-Converter
-├── src
-│   ├── index.py          # Entry point of the application
-│   ├── converter.py      # Contains PDFConverter class for conversion logic
-│   ├── utils.py          # Utility functions for text and image extraction
-│   └── types
-│       └── __init__.py   # Custom types and data structures
-├── requirements.txt      # Project dependencies
-└── README.md             # Project documentation
-```
+## 🚀 How to Host on GitHub Pages
+1. Push this repository to GitHub.
+2. Go to **Settings** > **Pages**.
+3. Under **Source**, select `main` (or `master`) branch.
+4. Click **Save**.
+5. Your site will be live at `https://yourusername.github.io/repo-name/`.
 
-## Installation
-To set up the project, clone the repository and install the required dependencies:
+## 🛠 Technology Stack
+- **PDF.js**: For reading and rendering PDF files.
+- **Tesseract.js**: For Optical Character Recognition (OCR) inside the browser.
+- **docx.js**: For generating Word documents.
+- **Vanilla Text Processing**: Custom logic to handle text direction and cleaning.
 
-```bash
-git clone <repository-url>
-cd PDF-to-Word-Converter
-pip install -r requirements.txt
-```
-
-## Usage
-1. Run the application:
-   ```bash
-   python src/index.py
-   ```
-2. Follow the prompts to select the PDF file you wish to convert.
-3. The converted Word document will be saved in the same directory as the input PDF.
-
-## Dependencies
-The project requires the following Python libraries:
-- PyPDF2
-- python-docx
-- Any other libraries needed for PDF processing and Word document creation.
-
-## Contributing
-Contributions are welcome! Please submit a pull request or open an issue for any enhancements or bug fixes.
-
-## License
-This project is licensed under the MIT License. See the LICENSE file for details.
+## 📂 Legacy Code
+The original Python backend code has been moved to the `legacy_server/` directory for reference. It is not used by the live website.

@@ -1,0 +1,11 @@
+Flask==3.0.0
+PyMuPDF==1.23.8
+python-docx==1.1.0
+Pillow==10.2.0
+pytesseract==0.3.10
+pdf2image==1.17.0
+Flask-HTTPAuth==4.8.0
+arabic-reshaper==3.0.0
+python-bidi==0.4.2
+python-dotenv==1.0.0
+gunicorn==21.2.0

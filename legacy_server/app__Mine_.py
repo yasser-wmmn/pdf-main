@@ -1,6 +1,10 @@
 import os
 import re
 from datetime import datetime
+from dotenv import load_dotenv
+
+load_dotenv()
+
 import fitz  # PyMuPDF
 from flask import Flask, render_template, request, send_from_directory, session, abort
 from werkzeug.utils import secure_filename
@@ -14,17 +18,28 @@ from pdf2image import convert_from_path
 from flask_httpauth import HTTPBasicAuth
 
 # 🛠️ إعداد Tesseract OCR
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+# في بيئة الاستضافة (Linux)، عادةً لا نحتاج لتحديد المسار إذا تم تثبيته عالميًا
+# ولكن يمكن تحديده عبر متغيرات البيئة إذا لزم الأمر
+tesseract_path = os.getenv('TESSERACT_PATH')
+if tesseract_path:
+    pytesseract.pytesseract.tesseract_cmd = tesseract_path
+else:
+    # القيمة الافتراضية لنظام ويندوز للتطوير المحلي
+    if os.path.exists(r"C:\Program Files\Tesseract-OCR\tesseract.exe"):
+        pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
-# 🛠️ تحديد مسار Poppler يدويًا
-POPPLER_PATH = r"C:\Program Files\Poppler\Library\bin"
+# 🛠️ تحديد مسار Poppler
+# في Linux عادة يكون في المسار العام، ولكن في Windows يحتاج تحديد
+POPPLER_PATH = os.getenv('POPPLER_PATH')
+if not POPPLER_PATH and os.path.exists(r"C:\Program Files\Poppler\Library\bin"):
+     POPPLER_PATH = r"C:\Program Files\Poppler\Library\bin"
 
 # 🔐 إعدادات الأمان
-USERNAME = 'admin'           # يمكن تغييرها
-PASSWORD = '123123'  # غيرها فورًا!
+USERNAME = os.getenv('ADMIN_USERNAME', 'admin')
+PASSWORD = os.getenv('ADMIN_PASSWORD', 'change_this_password')
 
 app = Flask(__name__)
-app.secret_key = 'a_very_secure_random_string_here'  # غيرها!
+app.secret_key = os.getenv('SECRET_KEY', 'dev-key-please-change-in-prod')
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['OUTPUT_FOLDER'] = 'outputs'
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 50MB
