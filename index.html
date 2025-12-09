@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>تحويل المستندات إلى Word - نسخة الويب</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <!-- مكتبات المعالجة (Client-Side) -->
@@ -182,7 +183,7 @@
         }
 
         async function createWordDoc(pages) {
-            const { Document, Packer, Paragraph, TextRun, AlignmentType } = docx;
+            const { Document, Packer, Paragraph, TextRun, AlignmentType } = window.docx;
 
             const docChildren = [];
 
@@ -190,7 +191,7 @@
             docChildren.push(
                 new Paragraph({
                     text: selectedFile.name,
-                    heading: docx.HeadingLevel.HEADING_1,
+                    heading: window.docx.HeadingLevel.HEADING_1,
                     alignment: AlignmentType.CENTER,
                     bidirectional: true // مهم للعربية
                 })
