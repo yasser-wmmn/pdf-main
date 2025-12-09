@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>تحويل المستندات إلى Word</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: #181c24;
+            background-size: cover;
+            min-height: 100vh;
+            font-family: 'Cairo', Tahoma, Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            margin: 0;
+        }
+        /* أشكال جانبية ديناميكية */
+        .side-shape {
+            position: absolute;
+            z-index: 1;
+            opacity: 0.18;
+            filter: blur(1px);
+            pointer-events: none;
+            animation: float 6s ease-in-out infinite alternate;
+        }
+        .side-shape.shape1 { left: -80px; top: 10%; width: 180px; height: 180px; background: radial-gradient(circle at 60% 40%, #00c6fb 60%, transparent 100%); animation-delay: 0s; }
+        .side-shape.shape2 { right: -100px; bottom: 8%; width: 220px; height: 220px; background: radial-gradient(circle at 40% 60%, #0078d7 60%, transparent 100%); animation-delay: 1.5s; }
+        .side-shape.shape3 { left: 10%; bottom: -80px; width: 120px; height: 120px; background: radial-gradient(circle at 50% 50%, #fff 40%, transparent 100%); opacity: 0.10; animation-delay: 2.5s; }
+        .side-shape.shape4 { right: 5%; top: 5%; width: 90px; height: 90px; background: radial-gradient(circle at 60% 40%, #fff 40%, transparent 100%); opacity: 0.12; animation-delay: 3s; }
+        .side-shape.shape5 { left: 40%; top: 80%; width: 70px; height: 70px; background: radial-gradient(circle at 50% 50%, #00c6fb 60%, transparent 100%); opacity: 0.15; animation-delay: 4s; }
+        .side-shape.shape6 { right: 20%; bottom: 20%; width: 60px; height: 60px; background: radial-gradient(circle at 50% 50%, #0078d7 60%, transparent 100%); opacity: 0.13; animation-delay: 2.2s; }
+        .side-shape.shape7 { left: 80px; top: 50%; width: 50px; height: 50px; background: radial-gradient(circle at 50% 50%, #fff 60%, transparent 100%); opacity: 0.09; animation-delay: 1.2s; }
+        .side-shape.shape8 { right: 30%; top: 30%; width: 110px; height: 110px; background: radial-gradient(circle at 50% 50%, #00c6fb 50%, transparent 100%); opacity: 0.10; animation-delay: 5s; }
+        .side-shape.shape9 { right: 55%; top: 30%; width: 110px; height: 110px; background: radial-gradient(circle at 50% 50%, #00c6fb 50%, transparent 100%); opacity: 0.10; animation-delay: 5s; }
+        .side-shape.shape10 { right: -30%; top: 30%; width: 110px; height: 110px; background: radial-gradient(circle at 50% 50%, #00c6fb 50%, transparent 100%); opacity: 0.10; animation-delay: 5s; }
+        .side-shape.shape11 { right: 88%; top: 55%; width: 110px; height: 200px; background: radial-gradient(circle at 50% 50%, #00c6fb 50%, transparent 100%); opacity: 0.10; animation-delay: 5s; }
+        .side-shape.shape12 { right: 99%; top: 77%; width: 200px; height: 110px; background: radial-gradient(circle at 50% 50%, #00c6fb 50%, transparent 100%); opacity: 0.10; animation-delay: 5s; }
+        @keyframes float {
+            0% { transform: translateY(0) scale(1);}
+            100% { transform: translateY(-30px) scale(1.08);}
+        }
+        /* الشعار */
+        .header-logo {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            width: 150px;
+            height: 150px;
+            background: url('static/bg-dark.png') no-repeat center;
+            background-size: cover;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 198, 251, 0.35);
+            opacity: 1;
+            z-index: 3;
+            transition: all 0.3s ease;
+            border: 2px solid #00c6fb;
+        }
+        .header-logo:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 25px rgba(0, 198, 251, 0.6);
+        }
+        /* الحاوية الرئيسية */
+        .upload-container {
+            background: rgba(35, 39, 47, 0.92);
+            padding: 40px 30px 30px 30px;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px 0 rgba(0,0,0,0.35);
+            max-width: 900px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .upload-container h2 {
+            color: #fff;
+            margin-bottom: 18px;
+            font-size: 1.6em;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(0, 198, 251, 0.3);
+        }
+        .upload-container label {
+            display: block;
+            margin-bottom: 12px;
+            color: #bbb;
+            font-size: 1.1em;
+        }
+        input[type="file"] { display: none; }
+        .custom-file-upload {
+            border: 2px dashed #444;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            cursor: pointer;
+            border-radius: 12px;
+            background: #181c24;
+            color: #bbb;
+            margin-bottom: 18px;
+            transition: all 0.3s;
+            border-image: linear-gradient(to right, #0078d7, #00c6fb) 1;
+        }
+        .custom-file-upload:hover {
+            border-color: #00c6fb;
+            color: #00c6fb;
+            background: rgba(0, 198, 251, 0.05);
+            box-shadow: 0 0 20px rgba(0, 198, 251, 0.1);
+        }
+        .upload-icon {
+            font-size: 40px;
+            color: #00c6fb;
+            margin-bottom: 8px;
+        }
+        #file-name {
+            display: block;
+            color: #00c6fb;
+            margin-top: 10px;
+            font-size: 1em;
+            word-break: break-all;
+            font-weight: bold;
+        }
+        .upload-container button {
+            background: linear-gradient(90deg, #0078d7 0%, #00c6fb 100%);
+            color: #fff;
+            border: none;
+            padding: 12px 0;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            box-shadow: 0 2px 8px 0 rgba(0,0,0,0.15);
+        }
+        .upload-container button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 198, 251, 0.3);
+        }
+        /* قسم التحليل */
+        .analysis-section {
+            margin-top: 30px;
+            display: none; /* يظهر فقط بعد التحليل */
+        }
+        .analysis-header {
+            color: #00c6fb;
+            font-size: 1.4em;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .content-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #444;
+            border-radius: 10px;
+            padding: 15px;
+            color: #ddd;
+            direction: rtl;
+            text-align: right;
+            overflow-y: auto;
+            max-height: 400px;
+            scrollbar-width: thin;
+            scrollbar-color: #00c6fb #181c24;
+        }
+        .content-box::-webkit-scrollbar {
+            width: 6px;
+        }
+        .content-box::-webkit-scrollbar-track {
+            background: #181c24;
+        }
+        .content-box::-webkit-scrollbar-thumb {
+            background-color: #00c6fb;
+            border-radius: 10px;
+        }
+        .content-box h3 {
+            color: #00c6fb;
+            margin-top: 0;
+            font-size: 1.2em;
+            border-bottom: 1px dashed #666;
+            padding-bottom: 8px;
+        }
+        .content-box p {
+            line-height: 1.8;
+            white-space: pre-wrap;
+            font-size: 0.95em;
+        }
+        .content-box img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .note {
+            color: #888;
+            font-size: 0.95em;
+            margin-top: 18px;
+            line-height: 1.5;
+            border-top: 1px dashed #444;
+            padding-top: 12px;
+        }
+        .success {
+            color: #4caf50;
+            margin-top: 18px;
+            font-size: 1em;
+            font-weight: bold;
+        }
+        .error {
+            color: #ff5555;
+            margin-top: 18px;
+            font-size: 1em;
+        }
+        .download-links {
+            margin-top: 18px;
+            text-align: right;
+        }
+        .download-links a {
+            color: #00c6fb;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        .download-links a:hover {
+            color: #fff;
+            text-shadow: 0 0 8px #00c6fb;
+            text-decoration: underline;
+        }
+        /* شاشة التحميل */
+        .loader-bg {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(24,28,36,0.85);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            backdrop-filter: blur(4px);
+        }
+        .loader {
+            border: 6px solid #222;
+            border-top: 6px solid #00c6fb;
+            border-radius: 50%;
+            width: 54px;
+            height: 54px;
+            animation: spin 1s linear infinite;
+            box-shadow: 0 0 16px #00c6fb, 0 0 32px #00c6fb;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg);}
+            100% { transform: rotate(360deg);}
+        }
+        .loader-text {
+            color: #00c6fb;
+            margin-top: 18px;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-shadow: 0 0 8px #00c6fb;
+        }
+        /* إحصائيات النتائج */
+        .stats {
+            color: #bbb;
+            font-size: 0.95em;
+            margin-top: 8px;
+        }
+        .doc-title {
+            color: #fff;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-top: 6px;
+        }
+    </style>
+</head>
+<body>
+    <!-- أشكال جانبية -->
+    <div class="side-shape shape1"></div>
+    <div class="side-shape shape2"></div>
+    <div class="side-shape shape3"></div>
+    <div class="side-shape shape4"></div>
+    <div class="side-shape shape5"></div>
+    <div class="side-shape shape6"></div>
+    <div class="side-shape shape7"></div>
+    <div class="side-shape shape8"></div>
+    <div class="side-shape shape9"></div>
+    <div class="side-shape shape10"></div>
+    <div class="side-shape shape11"></div>
+    <div class="side-shape shape12"></div>
+
+    <!-- الشعار -->
+    <div class="header-logo"></div>
+
+    <!-- الحاوية -->
+    <div class="upload-container">
+        <h2>تحويل المستندات إلى Word</h2>
+        <p style="color: #aaa; margin-bottom: 20px;">يدعم PDF، JPG، PNG، WEBP، TIFF</p>
+
+        <form id="upload-form" method="post" enctype="multipart/form-data">
+            <label for="pdf_file" class="custom-file-upload">
+                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                انقر لرفع ملف
+                <input id="pdf_file" type="file" name="pdf_file" accept=".pdf,.jpg,.jpeg,.png,.bmp,.tiff,.webp" required>
+                <span id="file-name"></span>
+            </label>
+            <button type="submit" id="submit-btn">تحويل إلى Word</button>
+        </form>
+
+        <!-- شاشة التحميل -->
+        <div id="loader-bg" class="loader-bg">
+            <div class="loader"></div>
+            <div class="loader-text">جاري رفع الملف ومعالجته عبر الذكاء الاصطناعي...</div>
+        </div>
+
+        <!-- قسم التحليل - يظهر بعد رفع الملف وتحليله -->
+        <div id="analysis-section" class="analysis-section">
+            <div class="analysis-header">تحليل المستند</div>
+            <div class="content-grid">
+                <!-- المستند الأصلي -->
+                <div class="content-box">
+                    <h3>المستند الأصلي</h3>
+                    <img id="original-image" src="{{ original_image }}" alt="المستند الأصلي">
+                </div>
+                <!-- النتيجة -->
+                <div class="content-box">
+                    <h3>النتيجة</h3>
+                    <p id="parsed-text">{{ parsed_text }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- النتائج النهائية -->
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        {% if download_links %}
+            <div class="success">
+                ✅ تم التحويل بنجاح!
+            </div>
+            <div class="doc-title">{{ document_title }}</div>
+            <div class="stats">
+                الصفحات: {{ stats.pages }} | الكلمات: {{ stats.words }}
+            </div>
+            <div class="download-links">
+                {% for link in download_links %}
+                    <a href="{{ link }}">📥 تحميل المستند</a>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="note">
+            يدعم النصوص العربية والإنجليزية.<br>
+            <small style="color:#777;">بدون فقدان التنسيق، باستخدام الذكاء الاصطناعي.</small>
+        </div>
+    </div>
+
+    <script>
+        // عرض اسم الملف
+        const input = document.getElementById('pdf_file');
+        const fileNameSpan = document.getElementById('file-name');
+        input.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                fileNameSpan.textContent = this.files[0].name;
+            } else {
+                fileNameSpan.textContent = '';
+            }
+        });
+
+        // إظهار اللودر عند الإرسال
+        const form = document.getElementById('upload-form');
+        const loaderBg = document.getElementById('loader-bg');
+        const analysisSection = document.getElementById('analysis-section');
+
+        form.addEventListener('submit', function(e) {
+            loaderBg.style.display = 'flex';
+            analysisSection.style.display = 'none';
+        });
+
+        // إذا كانت هناك بيانات نتيجة، عرضها
+        document.addEventListener('DOMContentLoaded', function() {
+            {% if parsed_text %}
+                analysisSection.style.display = 'block';
+            {% endif %}
+        });
+    </script>
+</body>
+</html>
